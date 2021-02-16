@@ -2,12 +2,6 @@ package ship;
 
 public abstract class AbstractShip 
 {
-    public enum Direction {
-        EAST,
-        SOUTH,
-        WEST,
-        NORTH,
-    }
 
     private char label;
     private String designation;

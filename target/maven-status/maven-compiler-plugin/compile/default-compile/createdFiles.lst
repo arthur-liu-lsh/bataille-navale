@@ -1,2 +1,8 @@
 ensta\App.class
+ship\AbstractShip.class
+ship\Carrier.class
+ship\Battleship.class
+ship\Destroyer.class
+ship\AbstractShip$Direction.class
+ship\Submarine.class
 ensta\Board.class

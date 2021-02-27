@@ -8,6 +8,8 @@ public abstract class AbstractShip
     private int size;
     private Direction direction;
 
+    private int strikeCount;
+
     public char getLabel() {
         return label;
     }
@@ -26,6 +28,17 @@ public abstract class AbstractShip
 
     public void setDirection(Direction newDirection) {
         direction = newDirection;
+    }
+
+    public void addStrike() {
+        strikeCount++;
+    }
+
+    public boolean isSunk() {
+        if (strikeCount >= size) {
+            return true;
+        }
+        return false;
     }
 
     AbstractShip() {

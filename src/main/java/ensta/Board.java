@@ -4,31 +4,31 @@ import ship.*;
 
 public class Board implements IBoard{
     private String name;
-    private char[][] map;
-    private boolean[][] hits;
+    private ShipState[][] ships;
+    private Boolean[][] hits;
 
     Board(String newName, int size) {
         name = newName;
-        map = new char[size][size];
-        hits = new boolean[size][size];
+        ships = new ShipState[size][size];
+        hits = new Boolean[size][size];
 
         for(int i = 0; i<size; i++) {
             for(int j = 0; j<size; j++) {
-                map[i][j] = '0';
-                hits[i][j] = false;
+                ships[i][j] = null;
+                hits[i][j] = null;
             }
         }
     }
 
     Board(String newName) {
         name = newName;
-        map = new char[10][10];
-        hits = new boolean[10][10];
+        ships = new ShipState[10][10];
+        hits = new Boolean[10][10];
         
         for(int i = 0; i<10; i++) {
             for(int j = 0; j<10; j++) {
-                map[i][j] = '0';
-                hits[i][j] = false;
+                ships[i][j] = null;
+                hits[i][j] = null;
             }
         }
     }
@@ -37,11 +37,11 @@ public class Board implements IBoard{
         return name;
     }
 
-    char[][] getMap() {
-        return map;
+    ShipState[][] getShips() {
+        return ships;
     }
 
-    boolean[][] getHits() {
+    Boolean[][] getHits() {
         return hits;
     }
 
@@ -49,74 +49,83 @@ public class Board implements IBoard{
         name = newName;
     }
 
-    void setMap(char[][] newMap) {
-        map = newMap;
+    void setShips(ShipState[][] newShips) {
+        ships = newShips;
     }
 
-    void setHits(boolean[][] newHits) {
+    void setHits(Boolean[][] newHits) {
         hits = newHits;
     }
 
-    private String repeatSpace(int iterations) {
+    private void repeatSpace(int iterations) {
         String spaces = "";
         for (int i = 0; i<iterations; i++) {
             spaces += " ";
         }
-        return spaces;
+        System.out.print(spaces);
     }
 
     void print() {
-        String toPrint = "";
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        int height = map.length;
-        int width = map[0].length;
-
-        toPrint += "Navires :";
-        toPrint += repeatSpace(width*2-3);
-        toPrint += "Frappes :\n   ";
-
+        int height = ships.length;
+        int width = ships[0].length;
+    
+        System.out.print("Navires :");
+        repeatSpace(width*2-3);
+        System.out.print("Frappes :\n   ");
+    
         for (int j = 0; j < width; j++) {
-            toPrint += alphabet.charAt(j%26) + " ";
+            System.out.print(alphabet.charAt(j%26) + " ");
         }
-
-        toPrint += repeatSpace(6);
-
+    
+        repeatSpace(6);
+    
         for (int j = 0; j < width; j++) {
-            toPrint += alphabet.charAt(j%26) + " ";
+            System.out.print(alphabet.charAt(j%26) + " ");
         }
-
-        toPrint += "\n";
-
-
+    
+        System.out.println();
+    
+    
         for (int i = 0; i < height; i++) {
-            toPrint += Integer.toString(i+1);
+            System.out.print(Integer.toString(i+1));
             if(i+1 < 10) {
-                toPrint += " ";
+                System.out.print(" ");
             }
-            toPrint += " ";
-
+            System.out.print(" ");
+    
             for (int j = 0; j < width; j++) {
-                char character = (map[i][j] == '0') ? '.' : map[i][j];
-                toPrint += character + " ";
+                if (ships[i][j] == null) {
+                    System.out.print(". ");
+                }
+                else {
+                    System.out.print(ships[i][j].toString() + " ");
+                }
             }
             
-            toPrint += "   ";
-            toPrint += Integer.toString(i+1);
-            toPrint += " ";
+            System.out.print("   ");
+            System.out.print(Integer.toString(i+1));
+            System.out.print(" ");
             if(i+1 < 10) {
-                toPrint += " ";
+                System.out.print(" ");
             }
             for (int j = 0; j < width; j++) {
-                char character = !hits[i][j] ? '.' : 'X';
-                toPrint += character + " ";
+                if (hits[i][j] == null) {
+                    System.out.print(". ");
+                }
+                else if (hits[i][j]) {
+                    System.out.print(ColorUtil.colorize("X ", ColorUtil.Color.RED));
+                }
+                else {
+                    System.out.print("X ");
+                }
             }
-            toPrint += "\n";
+            System.out.println();
         }
-    System.out.print(toPrint);
     }
 
     public int getSize() {
-        return map.length;
+        return ships.length;
     }
 
     public void putShip(AbstractShip ship, int x, int y) {
@@ -124,13 +133,13 @@ public class Board implements IBoard{
             Direction direction = ship.getDirection();
 
             if (x < 0 || y < 0) {
-                throw new Exception("Invalid coordinates (exceeds map boundaries, negative): " + ship.getDesignation());
+                throw new Exception("Invalid coordinates (exceeds ships boundaries, negative): " + ship.getDesignation());
             }
 
-            int mapSize = getSize();
+            int shipsSize = getSize();
 
-            if (x >= mapSize || y >= mapSize) {
-                throw new Exception("Invalid coordinates (exceeds map boundaries, > mapSize): " + ship.getDesignation());
+            if (x >= shipsSize || y >= shipsSize) {
+                throw new Exception("Invalid coordinates (exceeds ships boundaries, > shipsSize): " + ship.getDesignation());
             }
 
             int shipSize = ship.getSize();
@@ -160,15 +169,15 @@ public class Board implements IBoard{
                     horizontal = 0;
             }
 
-            if (x + horizontal*shipSize < 0 || x + horizontal*shipSize >= mapSize || y + vertical*shipSize < 0 || y + vertical*shipSize >= mapSize) {
-                throw new Exception("Invalid coordinates (exceeds map boundaries, ship partially outside map): " + ship.getDesignation());
+            if (x + horizontal*shipSize < 0 || x + horizontal*shipSize >= shipsSize || y + vertical*shipSize < 0 || y + vertical*shipSize >= shipsSize) {
+                throw new Exception("Invalid coordinates (exceeds ships boundaries, ship partially outside ships): " + ship.getDesignation());
             }
 
             for (int i = 0; i < shipSize; i++) {
-                if (map[y + i*vertical][x + i*horizontal] != '0') {
+                if (ships[y + i*vertical][x + i*horizontal] != null) {
                     throw new Exception("Invalid coordinates (ships overlapping): " + ship.getDesignation());
                 } 
-                map[y + i*vertical][x + i*horizontal] = ship.getLabel();
+                ships[y + i*vertical][x + i*horizontal] = new ShipState(ship);
             }
         }
         catch (Exception e) {
@@ -177,7 +186,7 @@ public class Board implements IBoard{
     }
 
     public boolean hasShip(int x, int y) {
-        if (map[x][y] != '0') {
+        if (ships[x][y] != null) {
             return true;
         }
         return false;

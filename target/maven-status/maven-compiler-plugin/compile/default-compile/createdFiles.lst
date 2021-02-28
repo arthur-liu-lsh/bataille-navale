@@ -1,4 +1,5 @@
 ensta\App.class
+ensta\Game$1.class
 ship\Direction.class
 ensta\InputHelper$ShipInput.class
 ensta\ColorUtil$Color.class
@@ -9,9 +10,11 @@ ensta\TestGame.class
 ensta\IBoard.class
 ship\AbstractShip.class
 ship\ShipState.class
+ensta\AIPlayer.class
 ensta\Board$1.class
 ensta\BattleShipsAI.class
 ensta\ColorUtil.class
+ensta\Game.class
 ship\Battleship.class
 ship\Destroyer.class
 ensta\InputHelper.class

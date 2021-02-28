@@ -7,7 +7,7 @@ public class ShipState {
     public ShipState(AbstractShip newTargetShip) {
         targetShip = newTargetShip;
     }
-
+    
     public void addStrike() {
         struck = true;
         targetShip.addStrike();

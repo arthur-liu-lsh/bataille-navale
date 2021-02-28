@@ -36,12 +36,13 @@ public class Player {
 
         do {
             AbstractShip s = ships[i];
-            String msg = String.format("placer %d : %s(%d)", i + 1, s.getDesignation(), s.getSize());
-            System.out.println(msg);
-            InputHelper.ShipInput res = InputHelper.readShipInput();
             
             boolean ok = false;
+            InputHelper.ShipInput res = null;
             do {
+                String msg = String.format("placer %d : %s(%d)", i + 1, s.getDesignation(), s.getSize());
+                System.out.println(msg);
+                res = InputHelper.readShipInput();
                 try {
                     Direction newDirection;
                     switch (res.orientation) {
@@ -61,17 +62,15 @@ public class Player {
                             newDirection = Direction.EAST;
                     }
 
-
                     s.setDirection(newDirection);
-                    board.putShip(s, res.x, res.y);
-                    board.print();
                     ok = true;
                 }
                 catch (Exception e) {
                     System.out.println(e);
                 }
-
-            } while (!ok);
+                
+            } while (!canPutShip(s, res.x, res.y));
+            board.putShip(s, res.x, res.y);
             ++i;
             done = i == 5;
 
@@ -79,6 +78,55 @@ public class Player {
         } while (!done);
     }
 
+    /**
+     * Checks if a ship can be placed at given coordinates.
+     * @param ship The ship to place on the board.
+     * @param x
+     * @param y
+     * @return true if the ship can be placed, false otherwise.
+     */
+    private boolean canPutShip(AbstractShip ship, int x, int y) {
+        Direction o = ship.getDirection();
+        int dx = 0, dy = 0;
+        if (o == Direction.EAST) {
+            if (x + ship.getSize() >= board.getSize()) {
+                return false;
+            }
+            dx = 1;
+        } else if (o == Direction.SOUTH) {
+            if (y + ship.getSize() >= board.getSize()) {
+                return false;
+            }
+            dy = 1;
+        } else if (o == Direction.NORTH) {
+            if (y + 1 - ship.getSize() < 0) {
+                return false;
+            }
+            dy = -1;
+        } else if (o == Direction.WEST) {
+            if (x + 1 - ship.getSize() < 0) {
+                return false;
+            }
+            dx = -1;
+        }
+
+        int ix = x;
+        int iy = y;
+
+        for (int i = 0; i < ship.getSize(); ++i) {
+            if (board.hasShip(ix, iy)) {
+                return false;
+            }
+            ix += dx;
+            iy += dy;
+        }
+
+        return true;
+    }
+
+    /**
+     * Sends a hit on player input coordinates.
+     */
     public Hit sendHit(int[] coords) {
         boolean done = false;
         Hit hit = null;
@@ -87,12 +135,13 @@ public class Player {
             System.out.println("où frapper?");
             InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
             hit = this.opponentBoard.sendHit(hitInput.x, hitInput.y);
-            // TODO : Game expects sendHit to return BOTH hit result & hit coords.
-            // return hit is obvious. But how to return coords at the same time ?
+            coords[0] = hitInput.x;
+            coords[1] = hitInput.y;
+            done = true;
         } while (!done);
-
         return hit;
     }
+
 
     public AbstractShip[] getShips() {
         return ships;

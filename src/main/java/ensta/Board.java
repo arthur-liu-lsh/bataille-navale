@@ -65,6 +65,9 @@ public class Board implements IBoard{
         System.out.print(spaces);
     }
 
+    /**
+     * Prints the board on console.
+     */
     void print() {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int height = ships.length;
@@ -97,6 +100,9 @@ public class Board implements IBoard{
             for (int j = 0; j < width; j++) {
                 if (ships[i][j] == null) {
                     System.out.print(". ");
+                }
+                else if (ships[i][j].isStruck()) {
+                    System.out.print(ColorUtil.colorize(ships[i][j].toString(), ColorUtil.Color.RED) + " ");
                 }
                 else {
                     System.out.print(ships[i][j].toString() + " ");
@@ -211,17 +217,14 @@ public class Board implements IBoard{
         if (ships[y][x] != null) {
             if (!ships[y][x].isStruck()) {
                 ships[y][x].addStrike();
-                setHit(true,x,y);
                 if (ships[y][x].isSunk()) {
                     Hit sunkShip = Hit.fromInt(ships[y][x].getShip().getSize());
-                    System.out.println(sunkShip.toString() + " coulé");
                     return sunkShip;
                 }
             }
             return Hit.STRIKE;
         }
         
-        setHit(false, x, y);
         return Hit.MISS;
         
     }

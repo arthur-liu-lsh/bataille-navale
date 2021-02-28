@@ -187,7 +187,9 @@ public class Board implements IBoard{
 
     public boolean hasShip(int x, int y) {
         if (ships[x][y] != null) {
-            return true;
+            if (ships[x][y].isSunk()) {
+                return true;
+            }
         }
         return false;
     }
@@ -199,5 +201,34 @@ public class Board implements IBoard{
     public Boolean getHit(int x, int y) {
         return hits[x][y];
     }
+
+    /**
+     * Sends a hit at the given position
+     * @param x
+     * @param y
+     * @return status for the hit (eg : strike or miss)
+     */
+    public Hit sendHit(int x, int y) {
+        if (ships[x][y] != null) {
+            if (!ships[x][y].isStruck()) {
+                ships[x][y].addStrike();
+                setHit(true,x,y);
+                if (ships[x][y].isSunk()) {
+                    Hit sunkShip = Hit.fromInt(ships[x][y].getShip().getSize());
+                    System.out.println(sunkShip.toString() + " coulé");
+                    return sunkShip;
+                }
+                return Hit.STRIKE;
+            }
+            else {
+                return null;
+            }
+        }
+        
+        setHit(false, x, y);
+        return Hit.MISS;
+        
+    }
+
 
 }

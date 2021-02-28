@@ -27,7 +27,19 @@ public class App
         board.putShip(SS1,0,0);
         board.putShip(DD1,3,3);
         board.putShip(CV1,9,0);
+        
+        for(int i = 0; i < 10; i++) {
+            board.sendHit(0, i);
+        }
+        
+        for(int i = 0; i < 10; i++) {
+            board.sendHit(i, i);
+        }
 
+        
         board.print();
+
+        System.out.println("Is SS1 sunk ? " + SS1.isSunk());
+        System.out.println("Is CV1 sunk ? " + CV1.isSunk());
     }
 }

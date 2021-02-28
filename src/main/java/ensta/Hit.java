@@ -3,11 +3,11 @@ import java.util.NoSuchElementException;
 import ship.*;
 
 public enum Hit {
-    MISS(-1, "manqué"),
-    STRIKE(-2, "touché"),
-    DESTROYER(2, "Frégate"),
+    MISS(-1, "Manqué"),
+    STRIKE(-2, "Touché"),
+    DESTROYER(2, "Destroyer"),
     SUBMARINE(3, "Sous-marin"),
-    BATTLESHIP(4, "Croiseur"),
+    BATTLESHIP(4, "Cuirassé"),
     CARRIER(5, "Porte-avion");
 
     /* ***

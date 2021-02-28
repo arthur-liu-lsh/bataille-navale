@@ -132,17 +132,18 @@ public class Board implements IBoard{
         try {
             Direction direction = ship.getDirection();
 
-            if (x < 0 || y < 0) {
-                throw new Exception("Invalid coordinates (exceeds ships boundaries, negative): " + ship.getDesignation());
-            }
+            // if (x < 0 || y < 0) {
+            //     throw new Exception("Invalid coordinates (exceeds ships boundaries, negative): " + ship.getDesignation());
+            // }
 
-            int shipsSize = getSize();
+            int mapSize = getSize();
 
-            if (x >= shipsSize || y >= shipsSize) {
-                throw new Exception("Invalid coordinates (exceeds ships boundaries, > shipsSize): " + ship.getDesignation());
-            }
-
+            // if (x >= mapSize || y >= mapSize) {
+            //     throw new Exception("Invalid coordinates (exceeds ships boundaries, > shipsSize): " + ship.getDesignation());
+            // }
+            
             int shipSize = ship.getSize();
+
 
             int vertical;
             int horizontal;
@@ -169,14 +170,14 @@ public class Board implements IBoard{
                     horizontal = 0;
             }
 
-            if (x + horizontal*shipSize < 0 || x + horizontal*shipSize >= shipsSize || y + vertical*shipSize < 0 || y + vertical*shipSize >= shipsSize) {
-                throw new Exception("Invalid coordinates (exceeds ships boundaries, ship partially outside ships): " + ship.getDesignation());
-            }
+            // if (x + horizontal*shipSize < 0 || x + horizontal*shipSize >= shipsSize || y + vertical*shipSize < 0 || y + vertical*shipSize >= shipsSize) {
+            //     throw new Exception("Invalid coordinates (exceeds ships boundaries, ship partially outside ships): " + ship.getDesignation());
+            // }
 
             for (int i = 0; i < shipSize; i++) {
-                if (ships[y + i*vertical][x + i*horizontal] != null) {
-                    throw new Exception("Invalid coordinates (ships overlapping): " + ship.getDesignation());
-                } 
+                // if (ships[y + i*vertical][x + i*horizontal] != null) {
+                //     throw new Exception("Invalid coordinates (ships overlapping): " + ship.getDesignation());
+                // } 
                 ships[y + i*vertical][x + i*horizontal] = new ShipState(ship);
             }
         }
@@ -186,20 +187,18 @@ public class Board implements IBoard{
     }
 
     public boolean hasShip(int x, int y) {
-        if (ships[x][y] != null) {
-            if (ships[x][y].isSunk()) {
-                return true;
-            }
+        if (ships[y][x] != null) {
+            return true;
         }
         return false;
     }
 
     public void setHit(boolean hit, int x, int y) {
-        hits[x][y] = hit;
+        hits[y][x] = hit;
     }
 
     public Boolean getHit(int x, int y) {
-        return hits[x][y];
+        return hits[y][x];
     }
 
     /**
@@ -209,20 +208,17 @@ public class Board implements IBoard{
      * @return status for the hit (eg : strike or miss)
      */
     public Hit sendHit(int x, int y) {
-        if (ships[x][y] != null) {
-            if (!ships[x][y].isStruck()) {
-                ships[x][y].addStrike();
+        if (ships[y][x] != null) {
+            if (!ships[y][x].isStruck()) {
+                ships[y][x].addStrike();
                 setHit(true,x,y);
-                if (ships[x][y].isSunk()) {
-                    Hit sunkShip = Hit.fromInt(ships[x][y].getShip().getSize());
+                if (ships[y][x].isSunk()) {
+                    Hit sunkShip = Hit.fromInt(ships[y][x].getShip().getSize());
                     System.out.println(sunkShip.toString() + " coulé");
                     return sunkShip;
                 }
-                return Hit.STRIKE;
             }
-            else {
-                return null;
-            }
+            return Hit.STRIKE;
         }
         
         setHit(false, x, y);
